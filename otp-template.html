@@ -1,0 +1,22 @@
+<!-- Subject: Kode verifikasi CreateWeb
+     Tempel di Supabase > Authentication > Email Templates > Confirm signup
+     Latar memakai {{ .SiteURL }}/otp-bg.gif (cuplikan video website).
+     Isi Site URL di Authentication > URL Configuration dengan alamat website CreateWeb. -->
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#0b1220" background="{{ .SiteURL }}/otp-bg.gif" style="background:#0b1220 url('{{ .SiteURL }}/otp-bg.gif') center/cover no-repeat;font-family:Arial,Helvetica,sans-serif">
+<tr><td align="center" style="padding:36px 12px">
+ <table width="100%" cellpadding="0" cellspacing="0" style="max-width:440px;background:#0b1220;background:rgba(8,16,36,.7);border:1px solid rgba(255,255,255,.3);border-radius:24px">
+  <tr><td style="padding:30px 28px 6px;color:#ffffff;font-size:24px;font-weight:bold">CreateWeb</td></tr>
+  <tr><td style="padding:0 28px;color:#dbe4f7;font-size:15px;line-height:1.6">Halo, <b style="color:#ffffff">{{ .Data.username }}</b>. Masukkan kode ini di halaman daftar untuk mengaktifkan akunmu.</td></tr>
+  <tr><td align="center" style="padding:22px 28px 10px">
+   <div style="background:#050b18;background:rgba(5,11,24,.75);border:1px dashed #8fb4ff;border-radius:16px;padding:18px 0;color:#ffffff;font-size:34px;font-weight:bold;letter-spacing:10px">{{ .Token }}</div>
+  </td></tr>
+  <tr><td style="padding:10px 28px 4px">
+   <table width="100%" cellpadding="0" cellspacing="0" style="background:#101a33;background:rgba(255,255,255,.1);border-radius:14px">
+    <tr><td style="padding:12px 16px;color:#aebbd8;font-size:13px">Username</td><td align="right" style="padding:12px 16px;color:#ffffff;font-size:14px;font-weight:bold">{{ .Data.username }}</td></tr>
+    <tr><td style="padding:0 16px 12px;color:#aebbd8;font-size:13px">Email</td><td align="right" style="padding:0 16px 12px;color:#ffffff;font-size:14px;font-weight:bold">{{ .Email }}</td></tr>
+   </table>
+  </td></tr>
+  <tr><td style="padding:14px 28px 28px;color:#b7c3e0;font-size:13px;line-height:1.6">Kode berlaku sebentar saja. Jangan bagikan kode ini ke siapa pun. Kalau kamu tidak merasa mendaftar, abaikan email ini.<br><br>Powered by rijalsatoru-xd.biz.id</td></tr>
+ </table>
+</td></tr>
+</table>

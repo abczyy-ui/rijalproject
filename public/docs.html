@@ -1,0 +1,18 @@
+<!doctype html><html lang="id"><head><title>Dokumentasi · CreateWeb</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+<main class="wrap"><h1 style="font-size:40px">Dokumentasi API</h1>
+<div class="glass panel"><h2>Autentikasi</h2><p>Semua endpoint memakai header <code>Authorization: Bearer ACCESS_TOKEN</code>. Token didapat dari login Supabase (<code>session.access_token</code>).</p></div>
+<div class="glass panel"><h2>GET /api/stats</h2><p>Menampilkan jumlah website ter-deploy dan sisa jatah hari ini.</p>
+<pre class="code">curl https://DOMAINMU/api/stats -H "Authorization: Bearer TOKEN"
+
+{"deployed":12,"today":2,"limit":5,"role":"user","username":"budi"}</pre></div>
+<div class="glass panel"><h2>POST /api/deploy</h2><p>Mengirim file website ke Vercel. Respons berupa teks yang mengalir (stream) berisi log proses. Isi <code>data</code> dengan base64. Total ukuran maksimal sekitar 4,5 MB.</p>
+<pre class="code">curl -N -X POST https://DOMAINMU/api/deploy \
+ -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" \
+ -d '{"name":"websiteku","files":[{"file":"index.html","data":"PGgxPkhhbG88L2gxPg=="}]}'</pre>
+<p>Kode status: <code>401</code> sesi habis, <code>429</code> jatah 5x per hari habis (admin tanpa batas), <code>400</code> tidak ada file.</p></div>
+<div class="glass panel"><h2>POST /api/profile</h2><p>Mengganti foto profil lewat URL gambar (http/https). Kirim string kosong untuk menghapus foto.</p>
+<pre class="code">curl -X POST https://DOMAINMU/api/profile \\
+ -H "Authorization: Bearer TOKEN" -H "Content-Type: application/json" \\
+ -d '{"avatar_url":"https://contoh.com/foto.jpg"}'</pre></div>
+<div class="glass panel"><h2>Batas pemakaian</h2><p>User biasa: 5 deploy per hari, reset pukul 00.00 WIB. Admin: tanpa batas.</p></div>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="/config.js"></script><script src="/app.js"></script></body></html>

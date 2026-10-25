@@ -1,0 +1,16 @@
+<!doctype html><html lang="id"><head><title>Masuk · CreateWeb</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+<main class="auth glass panel"><h2>Masuk</h2>
+<label for="e">Email</label><input id="e" type="email" autocomplete="email">
+<label for="p">Password</label><input id="p" type="password" autocomplete="current-password">
+<p class="msg" id="m"></p>
+<button class="btn main" id="go">Masuk</button>
+<p>Belum punya akun? <a href="/register.html">Daftar</a></p></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="/config.js"></script><script src="/app.js"></script>
+<script>
+fetch("/api/init").catch(()=>{}); // membuat akun admin otomatis bila belum ada
+$("go").onclick=async()=>{
+  $("m").textContent="";
+  const {error}=await sb.auth.signInWithPassword({email:$("e").value.trim(),password:$("p").value});
+  if(error)$("m").textContent=error.message.includes("not confirmed")?"Akun belum diverifikasi. Daftar ulang untuk mendapat kode OTP.":"Email atau password salah.";
+  else location.href="/dashboard.html";
+};
+</script></body></html>

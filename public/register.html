@@ -1,0 +1,28 @@
+<!doctype html><html lang="id"><head><title>Daftar · CreateWeb</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+<main class="auth glass panel">
+<div id="s1"><h2>Daftar</h2>
+<label for="u">Username</label><input id="u" autocomplete="username">
+<label for="e">Email (tujuan kode OTP)</label><input id="e" type="email" autocomplete="email">
+<label for="p">Password (minimal 6 karakter)</label><input id="p" type="password" autocomplete="new-password">
+<p class="msg" id="m1"></p><button class="btn main" id="go">Kirim kode OTP</button></div>
+<div id="s2" hidden><h2>Aktivasi akun</h2><p>Kode OTP sudah dikirim ke <b id="em"></b>.</p>
+<label for="o">Kode OTP</label><input id="o" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="10">
+<p class="msg" id="m2"></p><button class="btn main" id="ver">Aktifkan akun</button> <button class="btn" id="re">Kirim ulang</button></div>
+<p>Sudah punya akun? <a href="/login.html">Masuk</a></p></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="/config.js"></script><script src="/app.js"></script>
+<script>
+let email="";
+$("go").onclick=async()=>{
+  const u=$("u").value.trim();email=$("e").value.trim();
+  if(!/^[a-zA-Z0-9_]{3,20}$/.test(u))return $("m1").textContent="Username 3–20 karakter: huruf, angka, atau _.";
+  $("go").disabled=true;
+  const {error}=await sb.auth.signUp({email,password:$("p").value,options:{data:{username:u}}});
+  $("go").disabled=false;
+  if(error)return $("m1").textContent=error.message.includes("Database")?"Username sudah dipakai.":error.message;
+  $("em").textContent=email;$("s1").hidden=true;$("s2").hidden=false;
+};
+$("ver").onclick=async()=>{
+  const {error}=await sb.auth.verifyOtp({email,token:$("o").value.trim(),type:"signup"});
+  if(error)$("m2").textContent="Kode salah atau kedaluwarsa.";else location.href="/dashboard.html";
+};
+$("re").onclick=async()=>{const {error}=await sb.auth.resend({type:"signup",email});$("m2").className="msg"+(error?"":" ok");$("m2").textContent=error?error.message:"Kode baru dikirim.";};
+</script></body></html>

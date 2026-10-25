@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap");
+:root{--ink:#fff;--mute:rgba(255,255,255,.72);--acc:#9ad7ff}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:"Bricolage Grotesque",system-ui,sans-serif;color:var(--ink);background:#06101f;line-height:1.55}
+#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.veil{position:fixed;inset:0;background:linear-gradient(180deg,rgba(4,10,24,.45),rgba(4,10,24,.7));z-index:-1}
+a{color:var(--acc)}
+.nav{flex-wrap:wrap;display:flex;align-items:center;gap:8px;padding:14px 16px;position:sticky;top:0;z-index:5}
+.nav .logo{font-weight:800;font-size:20px;margin-right:auto;color:#fff;text-decoration:none}
+.nav a.b{padding:8px 14px;border-radius:99px;color:#fff;text-decoration:none;font-size:14px}
+.glass{position:relative;background:rgba(255,255,255,.1);backdrop-filter:blur(20px) saturate(190%);-webkit-backdrop-filter:blur(20px) saturate(190%);border:1px solid rgba(255,255,255,.26);border-radius:28px;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 -10px 24px rgba(255,255,255,.05),0 14px 44px rgba(0,0,0,.38)}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(120% 60% at 15% 0%,rgba(255,255,255,.28),transparent 55%)}
+.nav a.b,.btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(12px)}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+.hero{padding-top:9vh;padding-bottom:5vh}
+.hero h1{font-size:clamp(46px,13vw,104px);line-height:.92;margin:0 0 18px;font-weight:800;letter-spacing:-.04em}
+.hero p{font-size:18px;color:var(--mute);max-width:46ch;margin:0 0 26px}
+.btn{display:inline-block;padding:13px 22px;border-radius:99px;color:#fff;font:600 16px inherit;font-family:inherit;text-decoration:none;cursor:pointer}
+.btn.main{background:#fff;color:#08142b;border-color:#fff}
+.btn:disabled{opacity:.5}
+.panel{padding:22px;margin:14px 0}
+.panel h2{margin:0 0 14px;font-size:22px}
+label{display:block;font-size:14px;color:var(--mute);margin:12px 0 6px}
+input,textarea{width:100%;padding:13px 15px;border-radius:16px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.28);color:#fff;font:16px inherit;font-family:inherit}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.45)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.auth{max-width:420px;margin:6vh auto}
+.msg{min-height:22px;margin:12px 0 0;font-size:14px;color:#ffd1d1}
+.msg.ok{color:#c9ffd8}
+.otp{letter-spacing:.5em;text-align:center;font-size:24px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{padding:16px 18px}
+.card small{color:var(--mute);font-size:13px}
+.card b{display:block;font-size:26px;margin-top:2px;font-variant-numeric:tabular-nums}
+#term{margin:0;padding:16px;height:260px;overflow:auto;font:13px/1.5 ui-monospace,Menlo,monospace;color:#b6ffcb;white-space:pre-wrap}
+pre.code{background:rgba(0,0,0,.4);padding:14px;border-radius:16px;overflow:auto;font-size:13px}
+code{font-family:ui-monospace,Menlo,monospace;color:var(--acc)}
+.foot{text-align:center;padding:26px 16px 36px;color:var(--mute);font-size:14px}
+.foot a{margin:0 6px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(prefers-reduced-motion:reduce){#bg{display:none}}
+
+.cta{display:block;text-decoration:none;color:#fff;padding:20px 22px;margin:14px 0}.cta b{font-size:22px;display:block}.cta span{color:var(--mute)}
+.prof{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.av{width:84px;height:84px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:34px;font-weight:800;background:rgba(255,255,255,.14);flex:none}
+.av img{width:100%;height:100%;object-fit:cover}
+.nm{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:800}
+.mu{color:var(--mute);font-size:14px;word-break:break-all}
+.btn.sm{padding:7px 14px;font-size:14px;margin-top:8px}
+#edit{flex-basis:100%}

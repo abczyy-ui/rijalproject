@@ -1,0 +1,46 @@
+<!doctype html><html lang="id"><head><title>Deploy · CreateWeb</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+<main class="wrap">
+<h1 style="font-size:34px;margin:8px 0 4px">Deploy website</h1>
+<p id="quota" style="color:var(--mute);margin:0 0 8px">Memuat jatah deploy…</p>
+<section class="glass panel">
+<label for="n">Nama project</label><input id="n" placeholder="websiteku">
+<label for="f">File .zip atau .html</label><input id="f" type="file" accept=".zip,.html">
+<label for="c">Atau tempel kode HTML</label><textarea id="c" rows="4" placeholder="<h1>Halo</h1>"></textarea>
+<p><button class="btn main" id="go">Deploy</button></p></section>
+<pre id="term" class="glass">$ menunggu deploy…</pre>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="/config.js"></script><script src="/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+(async()=>{
+const {data:{session}}=await sb.auth.getSession();
+if(!session)return location.href="/login.html";
+const H={Authorization:"Bearer "+session.access_token};
+async function quota(){
+  const r=await fetch("/api/stats",{headers:H});if(!r.ok)return;const s=await r.json();
+  $("quota").textContent=s.limit?"Deploy hari ini: "+s.today+" dari "+s.limit:"Admin: tanpa batas deploy";
+}
+quota();
+$("go").onclick=async()=>{
+  const term=$("term"),out=t=>{term.textContent+=t;term.scrollTop=term.scrollHeight};
+  term.textContent="";const f=$("f").files[0],code=$("c").value.trim();
+  if(!f&&!code)return out("$ pilih file atau tempel kode dulu\n");
+  $("go").disabled=true;
+  try{
+    let files=[];
+    if(f&&/\.zip$/i.test(f.name)){
+      out("$ extract "+f.name+"\n");
+      const z=await JSZip.loadAsync(f);
+      const n=Object.keys(z.files).filter(k=>!z.files[k].dir&&!k.startsWith("__MACOSX")&&!k.endsWith(".DS_Store"));
+      const root=n[0]?n[0].split("/")[0]+"/":"",strip=n.length&&n.every(k=>k.startsWith(root));
+      for(const k of n)files.push({file:strip?k.slice(root.length):k,data:await z.files[k].async("base64")});
+    }else files=[{file:"index.html",data:btoa(unescape(encodeURIComponent(f?await f.text():code)))}];
+    if(!files.some(x=>x.file==="index.html"))out("! peringatan: index.html tidak ada di root\n");
+    out("> "+files.length+" file siap dikirim\n");
+    const r=await fetch("/api/deploy",{method:"POST",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify({name:$("n").value,files})});
+    const rd=r.body.getReader(),dc=new TextDecoder();
+    for(;;){const {done,value}=await rd.read();if(done)break;out(dc.decode(value,{stream:true}));}
+  }catch(e){out("❌ "+e.message+"\n")}
+  $("go").disabled=false;quota();
+};
+})();
+</script></body></html>

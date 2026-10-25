@@ -1,0 +1,51 @@
+<!doctype html><html lang="id"><head><title>Dashboard · CreateWeb</title><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/style.css"></head><body>
+<main class="wrap">
+<section class="glass panel prof">
+<div class="av"><img id="avi" alt="Foto profil" hidden><span id="avl">?</span></div>
+<div><div class="nm"><span id="u">…</span><svg id="vf" viewBox="0 0 24 24" width="22" height="22" role="img" aria-label="Admin terverifikasi" hidden><path fill="#1d9bf0" d="M12 1l2.6 2 3.2-.3 1.2 3 2.8 1.6-.6 3.2L22 12l-1.8 1.9.6 3.2-2.8 1.6-1.2 3-3.2-.3L12 23l-2.6-2-3.2.3-1.2-3-2.8-1.6.6-3.2L2 12l1.8-1.9-.6-3.2 2.8-1.6 1.2-3 3.2.3z"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="mu" id="em"></div><button class="btn sm" id="ch">Ganti foto</button></div>
+<div id="edit" hidden><label for="url">URL gambar</label><input id="url" type="url" placeholder="https://contoh.com/foto.jpg">
+<p class="msg" id="pm"></p><button class="btn main sm" id="sv">Simpan</button> <button class="btn sm" id="cn">Batal</button></div>
+</section>
+<section class="grid">
+<div class="glass card"><small>Website ter-deploy</small><b id="dep">–</b></div>
+<div class="glass card"><small>Deploy hari ini</small><b id="lim">–</b></div>
+<div class="glass card"><small>Runtime</small><b id="rt">00:00:00</b></div>
+<div class="glass card"><small>Jam</small><b id="clk">–</b></div>
+<div class="glass card"><small>Baterai</small><b id="bat">N/A</b></div>
+<div class="glass card"><small>Koneksi</small><b id="net">–</b></div>
+</section>
+<a class="glass cta" href="/deploy.html"><b>Deploy website baru</b><span>Upload ZIP atau HTML, lalu pantau prosesnya di terminal.</span></a>
+<p><button class="btn" id="out">Keluar</button></p>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="/config.js"></script><script src="/app.js"></script>
+<script>
+(async()=>{
+const {data:{session}}=await sb.auth.getSession();
+if(!session)return location.href="/login.html";
+const H={Authorization:"Bearer "+session.access_token};
+let cur=null;
+function render(s){
+  cur=s;const name=s.username||s.email||"?";
+  $("u").textContent=name;$("em").textContent=s.email||"";$("vf").hidden=s.role!=="admin";
+  $("avl").textContent=name[0].toUpperCase();$("avl").hidden=false;$("avi").hidden=true;
+  if(s.avatar_url){$("avi").onerror=()=>{$("avi").hidden=true;$("avl").hidden=false};$("avi").onload=()=>{$("avi").hidden=false;$("avl").hidden=true};$("avi").src=s.avatar_url;}
+}
+$("ch").onclick=()=>{$("edit").hidden=false;$("url").value=cur?.avatar_url||"";$("pm").textContent=""};
+$("cn").onclick=()=>$("edit").hidden=true;
+$("sv").onclick=async()=>{
+  $("pm").className="msg";$("pm").textContent="";
+  const r=await fetch("/api/profile",{method:"POST",headers:{...H,"Content-Type":"application/json"},body:JSON.stringify({avatar_url:$("url").value})});
+  const j=await r.json();
+  if(!r.ok)return $("pm").textContent=j.error||"Gagal menyimpan.";
+  render({...cur,avatar_url:j.avatar_url});$("edit").hidden=true;
+};
+const r=await fetch("/api/stats",{headers:H});
+if(r.ok){const s=await r.json();render(s);$("dep").textContent=s.deployed;$("lim").textContent=s.limit?s.today+" / "+s.limit:s.today+" (admin)";}
+const t0=Date.now(),p2=n=>String(Math.floor(n)).padStart(2,"0");
+setInterval(()=>{const s=(Date.now()-t0)/1000;$("rt").textContent=[s/3600,s/60%60,s%60].map(p2).join(":");$("clk").textContent=new Date().toLocaleTimeString("id-ID",{hour12:false});},1000);
+navigator.getBattery?.().then(b=>{const u=()=>$("bat").textContent=Math.round(b.level*100)+"%"+(b.charging?" ⚡":"");u();b.onlevelchange=b.onchargingchange=u;});
+const c=navigator.connection,net=()=>$("net").textContent=!navigator.onLine?"Offline":c?.type==="wifi"?"Wi-Fi":c?.type==="cellular"?"Data seluler":c?.effectiveType?"Online ("+c.effectiveType+")":"Online";
+net();addEventListener("online",net);addEventListener("offline",net);c?.addEventListener("change",net);
+$("out").onclick=async()=>{await sb.auth.signOut();location.href="/login.html"};
+})();
+</script></body></html>
